@@ -3,7 +3,7 @@
     xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="phonegap-nfc"
-    version="0.6.6">
+    version="0.7.3-OS">
 
     <name>NFC</name>
 
@@ -103,5 +103,51 @@
         </config-file>
     </platform>
 
+    <platform name="ios">
+        <dependency id="cordova-plugin-add-swift-support@1.7.2"/>
+        <js-module src="www/phonegap-nfc.js" name="NFC">
+            <runs />
+        </js-module>
 
+        <config-file parent="/*" target="config.xml">
+            <feature name="NfcPlugin">
+                <param name="ios-package" value="NfcPlugin" />
+            </feature>
+            <preference name="deployment-target" value="11" />
+            <preference name="SwiftVersion" value="4" />
+        </config-file>
+
+        <source-file src="src/ios/NFCTapPlugin.swift" />
+        <source-file src="src/ios/ISO15Reader.swift" />
+        <source-file src="src/ios/NFCTagReaderDelegate.swift" />
+        <source-file src="src/ios/NFCNDEFReaderDelegate.swift" />
+        <source-file src="src/ios/NFCNDEFWriterDelegate.swift" />
+        <source-file src="src/ios/AppDelegate+NFC.swift" />
+        <source-file src="src/ios/Utils.swift" />
+        <source-file src="src/ios/ISO14443.swift" />
+        <source-file src="src/ios/NFCPlugin-Bridging-Header.h" />
+
+
+        <!-- https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_nfc_readersession_formats?language=objc -->
+        <config-file parent="com.apple.developer.nfc.readersession.formats" platform="ios" target="*-Debug.plist">
+            <array>
+                <string>NDEF</string>
+                <string>TAG</string>
+            </array>
+        </config-file>
+        <config-file parent="com.apple.developer.nfc.readersession.formats" platform="ios" target="*-Release.plist">
+            <array>
+                <string>NDEF</string>
+                <string>TAG</string>
+            </array>
+        </config-file>
+
+        <!-- frameworks -->
+        <framework src="CoreNFC.framework" weak="true"/>
+
+        <preference name="NFC_USAGE_DESCRIPTION" default="Read NFC Tags" />
+        <config-file target="*-Info.plist" parent="NFCReaderUsageDescription">
+            <string>$NFC_USAGE_DESCRIPTION</string>
+        </config-file>
+    </platform>
 </plugin>
